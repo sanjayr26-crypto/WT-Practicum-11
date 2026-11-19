@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Bridge - Form with Validation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #0d1b2a;
+            color: #e0e1dd;
+        }
+
+        /* Flexbox navigation bar (from Practicum 6) */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            background-color: #1b263b;
+            padding: 15px 40px;
+            border-bottom: 2px solid #00b4d8;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            color: #00b4d8;
+        }
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+        }
+        .nav-links li a {
+            text-decoration: none;
+            color: #e0e1dd;
+            font-size: 16px;
+        }
+        .nav-links li a:hover {
+            color: #90e0ef;
+        }
+
+        /* Section heading */
+        .form-heading {
+            text-align: center;
+            margin-top: 100px;
+            color: #00b4d8;
+        }
+        .form-heading p {
+            color: #e0e1dd;
+            font-size: 14px;
+        }
+
+        .form-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px 40px 60px;
+        }
+
+        /* Registration form box */
+        .form-box {
+            background-color: #1b263b;
+            border: 1px solid #00b4d8;
+            border-radius: 8px;
+            padding: 25px;
+        }
+        .form-box h3 {
+            color: #00b4d8;
+            margin-top: 0;
+        }
+        .field {
+            margin-bottom: 18px;
+        }
+        .field label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: #90e0ef;
+        }
+        .field input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #00b4d8;
+            background-color: #0d1b2a;
+            color: #e0e1dd;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .error-msg {
+            display: block;
+            min-height: 16px;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #ff6b6b;
+        }
+
+        .form-box button {
+            background-color: #00b4d8;
+            color: #0d1b2a;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .form-box button:hover {
+            background-color: #90e0ef;
+        }
+
+        #form-status {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        .status-success {
+            color: #00b4d8;
+        }
+        .status-error {
+            color: #ff6b6b;
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                padding: 15px 20px;
+            }
+            .form-container {
+                padding: 15px 20px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">Block Bridge</div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="https://aboutus.com">About Us</a></li>
+            <li><a href="https://ourwebsite.com">Our Website</a></li>
+            <li><a href="#">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="form-heading">
+        <h2>Account Registration</h2>
+        <p>Form validated with JavaScript before submission</p>
+    </div>
+
+    <div class="form-container">
+
+        <div class="form-box">
+            <h3>Create Your Wallet Account</h3>
+            <form id="reg-form" novalidate>
+
+                <div class="field">
+                    <label for="full-name">Full Name</label>
+                    <input type="text" id="full-name" placeholder="Enter your full name">
+                    <span class="error-msg" id="name-error"></span>
+                </div>
+
+                <div class="field">
+                    <label for="email">Email Address</label>
+                    <input type="text" id="email" placeholder="you@example.com">
+                    <span class="error-msg" id="email-error"></span>
+                </div>
+
+                <div class="field">
+                    <label for="wallet-id">Wallet Address</label>
+                    <input type="text" id="wallet-id" placeholder="At least 8 characters">
+                    <span class="error-msg" id="wallet-error"></span>
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Minimum 6 characters">
+                    <span class="error-msg" id="password-error"></span>
+                </div>
+
+                <div class="field">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" placeholder="Re-enter password">
+                    <span class="error-msg" id="confirm-error"></span>
+                </div>
+
+                <button type="submit" id="submit-btn">Register</button>
+                <p id="form-status"></p>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        // 1. Selecting DOM elements
+        const form = document.getElementById('reg-form');
+
+        const nameInput = document.getElementById('full-name');
+        const emailInput = document.getElementById('email');
+        const walletInput = document.getElementById('wallet-id');
+        const passwordInput = document.getElementById('password');
+        const confirmInput = document.getElementById('confirm-password');
+
+        const nameError = document.getElementById('name-error');
+        const emailError = document.getElementById('email-error');
+        const walletError = document.getElementById('wallet-error');
+        const passwordError = document.getElementById('password-error');
+        const confirmError = document.getElementById('confirm-error');
+
+        const formStatus = document.getElementById('form-status');
+
+        // 2. Handling form submission
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            // clear old messages before re-checking
+            nameError.textContent = '';
+            emailError.textContent = '';
+            walletError.textContent = '';
+            passwordError.textContent = '';
+            confirmError.textContent = '';
+            formStatus.textContent = '';
+
+            let isValid = true;
+
+            const nameValue = nameInput.value.trim();
+            const emailValue = emailInput.value.trim();
+            const walletValue = walletInput.value.trim();
+            const passwordValue = passwordInput.value.trim();
+            const confirmValue = confirmInput.value.trim();
+
+            // 3. Validation rules using if / else conditions
+
+            // Name should not be empty
+            if (nameValue === '') {
+                nameError.textContent = 'Name is required.';
+                isValid = false;
+            }
+
+            // Email must contain @ and a dot after it
+            if (emailValue === '') {
+                emailError.textContent = 'Email is required.';
+                isValid = false;
+            } else if (!emailValue.includes('@') || !emailValue.includes('.')) {
+                emailError.textContent = 'Enter a valid email address.';
+                isValid = false;
+            }
+
+            // Wallet address minimum length
+            if (walletValue === '') {
+                walletError.textContent = 'Wallet address is required.';
+                isValid = false;
+            } else if (walletValue.length < 8) {
+                walletError.textContent = 'Wallet address must be at least 8 characters.';
+                isValid = false;
+            }
+
+            // Password minimum length
+            if (passwordValue === '') {
+                passwordError.textContent = 'Password is required.';
+                isValid = false;
+            } else if (passwordValue.length < 6) {
+                passwordError.textContent = 'Password must be at least 6 characters.';
+                isValid = false;
+            }
+
+            // Confirm password must match
+            if (confirmValue === '') {
+                confirmError.textContent = 'Please confirm your password.';
+                isValid = false;
+            } else if (confirmValue !== passwordValue) {
+                confirmError.textContent = 'Passwords do not match.';
+                isValid = false;
+            }
+
+            // 4. Final feedback to the user
+            if (isValid) {
+                formStatus.textContent = 'Registration successful! Welcome to Block Bridge.';
+                formStatus.className = 'status-success';
+                form.reset();
+            } else {
+                formStatus.textContent = 'Please fix the errors above and try again.';
+                formStatus.className = 'status-error';
+            }
+        });
+    </script>
+
+</body>
+</html>
